@@ -7,7 +7,6 @@ import type { VehicleType } from '../types/vehicleType';
 import type { ScheduleCreate } from '../types/schedule';
 import Alert from '../components/ui/Alert';
 import Button from '../components/ui/Button';
-import Spinner from '../components/ui/Spinner';
 
 const UUID_RE = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
 

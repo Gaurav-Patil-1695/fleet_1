@@ -1,13 +1,13 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import type { Vehicle } from '../../types/vehicle';
+import type { VehicleServiceSummary } from '../../types/depot';
 import Badge from '../ui/Badge';
 import { formatDate } from '../../utils/dateUtils';
-import { formatOdometer, isDueSoon } from '../../utils/odometerUtils';
+import { formatOdometer } from '../../utils/odometerUtils';
 import { relativeDueLabel, isOverdue } from '../../utils/dateUtils';
 
 export interface DueVehicleRowProps {
-  vehicle: Vehicle;
+  vehicle: VehicleServiceSummary;
 }
 
 export function DueVehicleRow({ vehicle }: DueVehicleRowProps): React.ReactElement {
@@ -15,19 +15,14 @@ export function DueVehicleRow({ vehicle }: DueVehicleRowProps): React.ReactEleme
 
   const dueDateOverdue =
     vehicle.next_service_due_date != null && isOverdue(vehicle.next_service_due_date);
-  const dueDateSoon =
-    !dueDateOverdue &&
-    vehicle.next_service_due_date != null &&
-    isDueSoon(vehicle.last_known_odometer_km, vehicle.next_service_due_odometer_km);
 
   const getDateBadgeVariant = (): 'warning' | 'error' | 'neutral' => {
     if (dueDateOverdue) return 'error';
-    if (dueDateSoon) return 'warning';
-    return 'neutral';
+    return 'warning';
   };
 
   const handleRowClick = () => {
-    navigate(`/vehicles/${vehicle.id}`);
+    navigate(`/vehicles/${vehicle.vehicle_id}`);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTableRowElement>) => {
@@ -97,7 +92,9 @@ export function DueVehicleRow({ vehicle }: DueVehicleRowProps): React.ReactEleme
           whiteSpace: 'nowrap',
         }}
       >
-        {formatOdometer(vehicle.last_known_odometer_km)}
+        {vehicle.last_known_odometer_km != null
+          ? formatOdometer(vehicle.last_known_odometer_km)
+          : <span style={{ color: 'var(--color-muted)' }}>—</span>}
       </td>
 
       {/* Next service due odometer */}
@@ -134,9 +131,7 @@ export function DueVehicleRow({ vehicle }: DueVehicleRowProps): React.ReactEleme
               style={{
                 color: dueDateOverdue
                   ? 'var(--color-error)'
-                  : dueDateSoon
-                  ? 'var(--color-warning)'
-                  : 'var(--color-body)',
+                  : 'var(--color-warning)',
                 fontWeight: dueDateOverdue
                   ? ('var(--font-weight-semibold)' as React.CSSProperties['fontWeight'])
                   : undefined,
@@ -158,26 +153,6 @@ export function DueVehicleRow({ vehicle }: DueVehicleRowProps): React.ReactEleme
         )}
       </td>
 
-      {/* Status badge */}
-      <td
-        style={{
-          padding: 'var(--space-3) var(--space-4)',
-          whiteSpace: 'nowrap',
-        }}
-      >
-        <Badge
-          variant={
-            vehicle.status === 'active'
-              ? 'success'
-              : vehicle.status === 'inactive'
-              ? 'neutral'
-              : 'error'
-          }
-        >
-          {vehicle.status.charAt(0).toUpperCase() + vehicle.status.slice(1)}
-        </Badge>
-      </td>
-
       {/* Service due indicator badge */}
       <td
         style={{
@@ -186,7 +161,7 @@ export function DueVehicleRow({ vehicle }: DueVehicleRowProps): React.ReactEleme
         }}
       >
         <Badge variant={getDateBadgeVariant()}>
-          {dueDateOverdue ? 'Overdue' : dueDateSoon ? 'Due Soon' : 'Upcoming'}
+          {dueDateOverdue ? 'Overdue' : 'Due Soon'}
         </Badge>
       </td>
     </tr>

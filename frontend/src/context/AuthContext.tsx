@@ -59,7 +59,7 @@ export function AuthProvider({ children }: AuthProviderProps): React.ReactElemen
   const [accessToken, setAccessToken] = useState<string | null>(getStoredAccessToken);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  const loadCurrentUser = useCallback(async (token: string): Promise<UserRead | null> => {
+  const loadCurrentUser = useCallback(async (_token: string): Promise<UserRead | null> => {
     try {
       const currentUser = await getCurrentUser();
       return currentUser;

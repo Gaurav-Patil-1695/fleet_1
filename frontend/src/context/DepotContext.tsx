@@ -14,6 +14,8 @@ const ACTIVE_DEPOT_KEY = 'active_depot_id';
 export interface DepotContextValue {
   depots: Depot[];
   activeDepot: Depot | null;
+  /** Alias for activeDepot?.id – some generated components reference this name */
+  selectedDepotId: string | null;
   isLoading: boolean;
   error: string | null;
   setActiveDepot: (depot: Depot | null) => void;
@@ -145,6 +147,7 @@ export function DepotProvider({ children }: DepotProviderProps): React.ReactElem
     () => ({
       depots,
       activeDepot,
+      selectedDepotId: activeDepot?.id ?? null,
       isLoading,
       error,
       setActiveDepot,

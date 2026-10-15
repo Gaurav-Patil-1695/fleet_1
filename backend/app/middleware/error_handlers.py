@@ -41,6 +41,22 @@ async def http_exception_handler(
     )
 
 
+def _make_json_safe(obj: Any) -> Any:
+    """Recursively convert non-JSON-serializable objects to strings."""
+    if isinstance(obj, dict):
+        return {k: _make_json_safe(v) for k, v in obj.items()}
+    if isinstance(obj, (list, tuple)):
+        return [_make_json_safe(item) for item in obj]
+    if isinstance(obj, Exception):
+        return str(obj)
+    try:
+        import json
+        json.dumps(obj)
+        return obj
+    except (TypeError, ValueError):
+        return str(obj)
+
+
 async def validation_exception_handler(
     request: Request, exc: RequestValidationError
 ) -> JSONResponse:
@@ -50,7 +66,7 @@ async def validation_exception_handler(
     Converts the list of validation errors into the Error envelope so clients
     always receive a consistent shape.
     """
-    errors = exc.errors()
+    errors = _make_json_safe(exc.errors())
     details: dict = {"validation_errors": errors}
     logger.debug(
         "Request validation error on %s %s: %s",

@@ -1,12 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useNavigate, useParams, Link } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { getWorkOrder, closeWorkOrder } from '../services/workOrdersService';
-import { getErrorMessage } from '../utils/errorUtils';
 import type { WorkOrder, WorkOrderClose } from '../types/workOrder';
 import Alert from '../components/ui/Alert';
 import Button from '../components/ui/Button';
 import Spinner from '../components/ui/Spinner';
-import Badge from '../components/ui/Badge';
 import WorkOrderStatusBadge from '../components/workOrder/WorkOrderStatusBadge';
 
 interface FormValues {

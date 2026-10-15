@@ -1,16 +1,12 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useVehicles } from '../hooks/useVehicles';
 import { usePermission } from '../hooks/usePermission';
-import { useDepots } from '../hooks/useDepots';
-import type { Vehicle } from '../types/vehicle';
 import type { VehicleStatus } from '../types/vehicle';
 import { formatDate } from '../utils/dateUtils';
 import { isOverdue } from '../utils/dateUtils';
 import Button from '../components/ui/Button';
-import Spinner from '../components/ui/Spinner';
 import Alert from '../components/ui/Alert';
-import PageHeader from '../components/ui/PageHeader';
 
 const PAGE_SIZE = 20;
 

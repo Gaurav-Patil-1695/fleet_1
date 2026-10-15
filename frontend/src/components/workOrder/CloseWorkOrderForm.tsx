@@ -137,9 +137,7 @@ export function CloseWorkOrderForm({
 
       {/* Submit error */}
       {submitError && (
-        <Alert variant="error" title="Failed to close work order">
-          {submitError}
-        </Alert>
+        <Alert variant="error" title="Failed to close work order" message={submitError} />
       )}
 
       {/* Completion notes */}

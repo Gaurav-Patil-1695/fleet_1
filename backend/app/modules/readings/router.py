@@ -7,7 +7,7 @@ from app.dependencies import get_current_user, get_db
 from app.middleware.rbac import require_role
 from app.models.user import User
 from app.modules.readings.schemas import ReadingCreate, ReadingListResponse, ReadingRead
-from app.modules.readings.service import ReadingService
+from app.modules.readings import service as _readings_service_module
 
 router = APIRouter(prefix="/readings", tags=["readings"])
 
@@ -24,7 +24,7 @@ async def list_readings(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(require_role("administrator", "manager")),
 ) -> ReadingListResponse:
-    service = ReadingService(db)
+    service = _readings_service_module.ReadingService(db)
     return await service.list_readings(
         vehicle_id=vehicle_id,
         source=source,
@@ -44,7 +44,7 @@ async def create_reading(
         require_role("administrator", "manager", "technician")
     ),
 ) -> ReadingRead:
-    service = ReadingService(db)
+    service = _readings_service_module.ReadingService(db)
     return await service.create_reading(body=body, current_user=current_user)
 
 
@@ -58,5 +58,5 @@ async def get_reading(
         require_role("administrator", "manager", "technician")
     ),
 ) -> ReadingRead:
-    service = ReadingService(db)
+    service = _readings_service_module.ReadingService(db)
     return await service.get_reading(reading_id=reading_id)

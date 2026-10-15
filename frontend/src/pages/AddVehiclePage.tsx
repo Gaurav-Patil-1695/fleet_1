@@ -9,7 +9,6 @@ import type { VehicleType } from '../types/vehicleType';
 import type { Depot } from '../types/depot';
 import Alert from '../components/ui/Alert';
 import Button from '../components/ui/Button';
-import Spinner from '../components/ui/Spinner';
 import Badge from '../components/ui/Badge';
 
 interface FormValues {

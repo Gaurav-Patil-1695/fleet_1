@@ -7,7 +7,6 @@ import type { WorkOrderStatus } from '../types/workOrder';
 import type { WorkOrder } from '../types/workOrder';
 import Alert from '../components/ui/Alert';
 import Button from '../components/ui/Button';
-import Spinner from '../components/ui/Spinner';
 import EmptyState from '../components/ui/EmptyState';
 import WorkOrderStatusBadge from '../components/workOrder/WorkOrderStatusBadge';
 
@@ -213,7 +212,6 @@ function WorkOrderRow({ workOrder }: WorkOrderRowProps): React.ReactElement {
 }
 
 export default function MyWorkOrdersPage(): React.ReactElement {
-  const navigate = useNavigate();
   const { user } = useAuth();
   const [activeFilter, setActiveFilter] = useState<FilterStatus>('all');
 

@@ -6,7 +6,6 @@ import Input from '../ui/Input';
 import Select from '../ui/Select';
 import Alert from '../ui/Alert';
 import { getErrorMessage } from '../../utils/errorUtils';
-import { toInputDateValue } from '../../utils/dateUtils';
 import { parseOdometerInput } from '../../utils/odometerUtils';
 
 export interface OdometerReadingFormProps {
@@ -191,19 +190,15 @@ export function OdometerReadingForm({
       </div>
 
       {errors.general && (
-        <Alert variant="error" onDismiss={() => setErrors((prev) => ({ ...prev, general: undefined }))}>
-          {errors.general}
-        </Alert>
+        <Alert variant="error" message={errors.general} onDismiss={() => setErrors((prev) => ({ ...prev, general: undefined }))} />
       )}
 
       {submitSuccess && (
-        <Alert variant="success">
-          Odometer reading submitted successfully.
-        </Alert>
+        <Alert variant="success" message="Odometer reading submitted successfully." />
       )}
 
       {errors.vehicle_id && (
-        <Alert variant="error">{errors.vehicle_id}</Alert>
+        <Alert variant="error" message={errors.vehicle_id} />
       )}
 
       {/* Odometer km */}

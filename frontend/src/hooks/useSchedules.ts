@@ -15,6 +15,7 @@ export interface UseSchedulesResult {
   isLoading: boolean;
   error: ApiError | null;
   refresh: () => Promise<void>;
+  refetch: () => Promise<void>;
 }
 
 export function useSchedules(params?: UseSchedulesParams): UseSchedulesResult {
@@ -27,7 +28,7 @@ export function useSchedules(params?: UseSchedulesParams): UseSchedulesResult {
   const vehicleClass = params?.vehicle_class;
   const isActive = params?.is_active;
   const page = params?.page;
-  const pageSize = params?.page_size;
+  const limit = params?.limit;
 
   const fetch = useCallback(async () => {
     setIsLoading(true);
@@ -39,7 +40,7 @@ export function useSchedules(params?: UseSchedulesParams): UseSchedulesResult {
         vehicle_class: vehicleClass,
         is_active: isActive,
         page,
-        page_size: pageSize,
+        limit,
       });
       setSchedules(response.data);
       setPagination(response.pagination);
@@ -50,11 +51,11 @@ export function useSchedules(params?: UseSchedulesParams): UseSchedulesResult {
     } finally {
       setIsLoading(false);
     }
-  }, [vehicleTypeId, vehicleClass, isActive, page, pageSize]);
+  }, [vehicleTypeId, vehicleClass, isActive, page, limit]);
 
   useEffect(() => {
     void fetch();
   }, [fetch]);
 
-  return { schedules, pagination, isLoading, error, refresh: fetch };
+  return { schedules, pagination, isLoading, error, refresh: fetch, refetch: fetch };
 }

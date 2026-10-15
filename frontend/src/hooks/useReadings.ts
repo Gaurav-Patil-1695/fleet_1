@@ -1,10 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
 import {
   listReadings,
-  listVehicleReadings,
   type ListReadingsParams,
-  type ListVehicleReadingsParams,
 } from '../services/readingsService';
+import {
+  listVehicleReadings,
+  type ListVehicleReadingsParams,
+} from '../services/vehiclesService';
 import type { Reading, ReadingListResponse } from '../types/reading';
 import type { Pagination, ApiError } from '../types/common';
 import { parseApiError } from '../utils/errorUtils';

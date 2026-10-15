@@ -9,6 +9,7 @@ export interface UseDepotDashboardResult {
   isLoading: boolean;
   error: ApiError | null;
   refresh: () => Promise<void>;
+  refetch: () => Promise<void>;
 }
 
 export function useDepotDashboard(depotId: string | null | undefined): UseDepotDashboardResult {
@@ -41,5 +42,5 @@ export function useDepotDashboard(depotId: string | null | undefined): UseDepotD
     void fetch();
   }, [fetch]);
 
-  return { dashboard, isLoading, error, refresh: fetch };
+  return { dashboard, isLoading, error, refresh: fetch, refetch: fetch };
 }

@@ -1,7 +1,7 @@
 import logging
 
-from fastapi import Request, HTTPException, status
-from fastapi.security import HTTPBearer
+from fastapi import Request, status
+from fastapi.responses import JSONResponse
 from jose import JWTError, jwt
 
 from app.config import settings
@@ -13,7 +13,14 @@ PUBLIC_PATHS = {
     ("/v1/auth/refresh", "POST"),
 }
 
-_bearer_scheme = HTTPBearer(auto_error=False)
+# Path prefixes that are always public regardless of method
+PUBLIC_PATH_PREFIXES = (
+    "/health",
+    "/healthz",
+    "/docs",
+    "/redoc",
+    "/openapi.json",
+)
 
 
 def extract_token_from_request(request: Request) -> str | None:
@@ -27,11 +34,11 @@ def extract_token_from_request(request: Request) -> str | None:
     return None
 
 
-def decode_access_token(token: str) -> dict:
+def decode_access_token(token: str) -> dict | None:
     """
     Decode and validate a JWT access token.
 
-    Raises HTTPException 401 if the token is invalid or expired.
+    Returns the payload dict on success, or None if the token is invalid/expired.
     """
     try:
         payload = jwt.decode(
@@ -42,11 +49,7 @@ def decode_access_token(token: str) -> dict:
         return payload
     except JWTError as exc:
         logger.debug("JWT decode failed: %s", exc)
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail={"code": "INVALID_TOKEN", "message": "Invalid or expired token"},
-            headers={"WWW-Authenticate": "Bearer"},
-        ) from exc
+        return None
 
 
 def is_public_path(request: Request) -> bool:
@@ -54,7 +57,12 @@ def is_public_path(request: Request) -> bool:
     authentication."""
     path = request.url.path
     method = request.method.upper()
-    return (path, method) in PUBLIC_PATHS
+    if (path, method) in PUBLIC_PATHS:
+        return True
+    for prefix in PUBLIC_PATH_PREFIXES:
+        if path.startswith(prefix):
+            return True
+    return False
 
 
 async def verify_token_middleware(request: Request, call_next):
@@ -72,9 +80,9 @@ async def verify_token_middleware(request: Request, call_next):
 
     token = extract_token_from_request(request)
     if token is None:
-        raise HTTPException(
+        return JSONResponse(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail={
+            content={
                 "code": "MISSING_TOKEN",
                 "message": "Authentication credentials were not provided",
             },
@@ -82,6 +90,16 @@ async def verify_token_middleware(request: Request, call_next):
         )
 
     payload = decode_access_token(token)
+    if payload is None:
+        return JSONResponse(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            content={
+                "code": "INVALID_TOKEN",
+                "message": "Invalid or expired token",
+            },
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
     request.state.token_payload = payload
 
     return await call_next(request)

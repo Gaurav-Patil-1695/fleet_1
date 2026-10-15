@@ -8,7 +8,6 @@ import { usePermission } from '../hooks/usePermission';
 import type { WorkOrder } from '../types/workOrder';
 import Alert from '../components/ui/Alert';
 import Button from '../components/ui/Button';
-import Spinner from '../components/ui/Spinner';
 import WorkOrderStatusBadge from '../components/workOrder/WorkOrderStatusBadge';
 import AssignTechnicianField from '../components/workOrder/AssignTechnicianField';
 import { formatOdometer } from '../utils/odometerUtils';

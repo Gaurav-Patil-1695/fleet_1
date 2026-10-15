@@ -4,6 +4,10 @@ import type { UserRole } from '../types/auth';
 export interface UsePermissionResult {
   // General role checks
   hasRole: (...roles: UserRole[]) => boolean;
+  /** Alias: returns true if the current user has any of the given roles */
+  canAccess: (roles: UserRole[]) => boolean;
+  /** Alias: returns true if the current user's role matches the given role */
+  isRole: (role: UserRole) => boolean;
   isAdministrator: boolean;
   isManager: boolean;
   isTechnician: boolean;
@@ -59,6 +63,8 @@ export function usePermission(): UsePermissionResult {
   return {
     // General role checks
     hasRole,
+    canAccess: (roles: UserRole[]) => hasRole(...roles),
+    isRole: (role: UserRole) => hasRole(role),
     isAdministrator,
     isManager,
     isTechnician,

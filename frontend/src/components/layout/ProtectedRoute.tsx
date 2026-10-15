@@ -1,10 +1,10 @@
 import React from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import Spinner from '../ui/Spinner';
 
-interface ProtectedRouteProps {
-  children: React.ReactNode;
+export interface ProtectedRouteProps {
+  children?: React.ReactNode;
 }
 
 function ProtectedRoute({ children }: ProtectedRouteProps): React.ReactElement {
@@ -37,7 +37,7 @@ function ProtectedRoute({ children }: ProtectedRouteProps): React.ReactElement {
     );
   }
 
-  return <>{children}</>;
+  return <>{children ?? <Outlet />}</>;
 }
 
 export default ProtectedRoute;

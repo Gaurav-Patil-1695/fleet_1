@@ -2,20 +2,16 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { useDepotDashboard } from '../hooks/useDepotDashboard';
-import { usePermission } from '../hooks/usePermission';
 import Button from '../components/ui/Button';
 import Badge from '../components/ui/Badge';
-import Spinner from '../components/ui/Spinner';
 import Alert from '../components/ui/Alert';
 import OverdueVehicleRow from '../components/depot/OverdueVehicleRow';
 import DueVehicleRow from '../components/depot/DueVehicleRow';
-import DashboardStats from '../components/depot/DashboardStats';
 import type { VehicleServiceSummary } from '../types/depot';
 
 export default function DashboardPage(): React.ReactElement {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { canAccess } = usePermission();
 
   const depotId: string | null =
     user && 'depot_id' in user ? (user as { depot_id: string | null }).depot_id : null;

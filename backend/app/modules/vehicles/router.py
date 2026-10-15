@@ -13,7 +13,7 @@ from app.modules.vehicles.schemas import (
     VehicleRead,
     VehicleUpdate,
 )
-from app.modules.vehicles.service import VehicleService
+from app.modules.vehicles import service as _vehicles_service_module
 from app.modules.readings.schemas import ReadingListResponse
 from app.modules.work_orders.schemas import WorkOrderListResponse
 
@@ -33,7 +33,7 @@ async def list_vehicles(
         require_role("administrator", "manager", "technician")
     ),
 ) -> VehicleListResponse:
-    service = VehicleService(db)
+    service = _vehicles_service_module.VehicleService(db)
     return await service.list_vehicles(
         depot_id=depot_id,
         vehicle_type_id=vehicle_type_id,
@@ -50,7 +50,7 @@ async def create_vehicle(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(require_role("administrator", "manager")),
 ) -> VehicleRead:
-    service = VehicleService(db)
+    service = _vehicles_service_module.VehicleService(db)
     return await service.create_vehicle(body)
 
 
@@ -64,7 +64,7 @@ async def get_vehicle(
         require_role("administrator", "manager", "technician")
     ),
 ) -> VehicleRead:
-    service = VehicleService(db)
+    service = _vehicles_service_module.VehicleService(db)
     return await service.get_vehicle(vehicleId)
 
 
@@ -77,7 +77,7 @@ async def update_vehicle(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(require_role("administrator", "manager")),
 ) -> VehicleRead:
-    service = VehicleService(db)
+    service = _vehicles_service_module.VehicleService(db)
     return await service.update_vehicle(vehicleId, body)
 
 
@@ -87,7 +87,7 @@ async def delete_vehicle(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(require_role("administrator")),
 ) -> Response:
-    service = VehicleService(db)
+    service = _vehicles_service_module.VehicleService(db)
     await service.delete_vehicle(vehicleId)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
@@ -110,7 +110,7 @@ async def list_vehicle_readings(
         require_role("administrator", "manager", "technician")
     ),
 ) -> ReadingListResponse:
-    service = VehicleService(db)
+    service = _vehicles_service_module.VehicleService(db)
     return await service.list_vehicle_readings(
         vehicle_id=vehicleId,
         source=source,
@@ -140,7 +140,7 @@ async def list_vehicle_work_orders(
         require_role("administrator", "manager", "technician")
     ),
 ) -> WorkOrderListResponse:
-    service = VehicleService(db)
+    service = _vehicles_service_module.VehicleService(db)
     return await service.list_vehicle_work_orders(
         vehicle_id=vehicleId,
         status=status_filter,

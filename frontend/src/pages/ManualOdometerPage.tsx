@@ -88,7 +88,6 @@ export default function ManualOdometerPage(): React.ReactElement {
   const [lowerThanLastWarning, setLowerThanLastWarning] = useState(false);
   const [confirmedLower, setConfirmedLower] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const loadVehicle = useCallback(async () => {
     if (!vehicleId) return;
@@ -108,7 +107,7 @@ export default function ManualOdometerPage(): React.ReactElement {
     if (!vehicleId) return;
     setReadingsLoading(true);
     try {
-      const res = await listVehicleReadings({ vehicleId, page: 1, page_size: 5 });
+      const res = await listVehicleReadings(vehicleId, { page: 1, page_size: 5 });
       setReadings(res.data.slice(0, 5));
     } catch {
       // non-critical — just show empty table

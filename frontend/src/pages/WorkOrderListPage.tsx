@@ -1,13 +1,11 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useWorkOrders } from '../hooks/useWorkOrders';
 import { usePermission } from '../hooks/usePermission';
 import { formatDate } from '../utils/dateUtils';
 import WorkOrderStatusBadge from '../components/workOrder/WorkOrderStatusBadge';
 import Button from '../components/ui/Button';
-import Spinner from '../components/ui/Spinner';
 import Alert from '../components/ui/Alert';
-import EmptyState from '../components/ui/EmptyState';
 import type { WorkOrderStatus } from '../types/workOrder';
 
 type StatusFilter = 'all' | WorkOrderStatus;
@@ -80,7 +78,6 @@ export default function WorkOrderListPage(): React.ReactElement {
   }
 
   const totalPages = pagination?.total_pages ?? 1;
-  const totalItems = pagination?.total_items ?? filteredWorkOrders.length;
 
   const thStyle: React.CSSProperties = {
     textAlign: 'left',

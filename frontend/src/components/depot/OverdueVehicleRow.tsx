@@ -1,19 +1,19 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import type { Vehicle } from '../../types/vehicle';
+import type { VehicleServiceSummary } from '../../types/depot';
 import Badge from '../ui/Badge';
 import { formatDate, relativeDueLabel } from '../../utils/dateUtils';
 import { formatOdometer } from '../../utils/odometerUtils';
 
 export interface OverdueVehicleRowProps {
-  vehicle: Vehicle;
+  vehicle: VehicleServiceSummary;
 }
 
 export function OverdueVehicleRow({ vehicle }: OverdueVehicleRowProps): React.ReactElement {
   const navigate = useNavigate();
 
   const handleRowClick = () => {
-    navigate(`/vehicles/${vehicle.id}`);
+    navigate(`/vehicles/${vehicle.vehicle_id}`);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTableRowElement>) => {
@@ -30,9 +30,6 @@ export function OverdueVehicleRow({ vehicle }: OverdueVehicleRowProps): React.Re
       : null;
 
   const isOdometerOverdue = kmUntilService != null && kmUntilService <= 0;
-  const isDateOverdue =
-    vehicle.next_service_due_date != null &&
-    new Date(vehicle.next_service_due_date) < new Date();
 
   return (
     <tr
@@ -117,7 +114,9 @@ export function OverdueVehicleRow({ vehicle }: OverdueVehicleRowProps): React.Re
           whiteSpace: 'nowrap',
         }}
       >
-        {formatOdometer(vehicle.last_known_odometer_km)}
+        {vehicle.last_known_odometer_km != null
+          ? formatOdometer(vehicle.last_known_odometer_km)
+          : <span style={{ color: 'var(--color-muted)' }}>—</span>}
       </td>
 
       {/* Next service due odometer */}
@@ -191,26 +190,6 @@ export function OverdueVehicleRow({ vehicle }: OverdueVehicleRowProps): React.Re
         ) : (
           <span style={{ color: 'var(--color-muted)' }}>—</span>
         )}
-      </td>
-
-      {/* Vehicle status badge */}
-      <td
-        style={{
-          padding: 'var(--space-3) var(--space-4)',
-          whiteSpace: 'nowrap',
-        }}
-      >
-        <Badge
-          variant={
-            vehicle.status === 'active'
-              ? 'success'
-              : vehicle.status === 'inactive'
-              ? 'neutral'
-              : 'error'
-          }
-        >
-          {vehicle.status.charAt(0).toUpperCase() + vehicle.status.slice(1)}
-        </Badge>
       </td>
 
       {/* Overdue badge */}

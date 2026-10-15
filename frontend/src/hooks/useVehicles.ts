@@ -15,6 +15,7 @@ export interface UseVehiclesResult {
   isLoading: boolean;
   error: ApiError | null;
   refresh: () => Promise<void>;
+  refetch: () => Promise<void>;
 }
 
 export function useVehicles(params?: UseVehiclesParams): UseVehiclesResult {
@@ -58,5 +59,5 @@ export function useVehicles(params?: UseVehiclesParams): UseVehiclesResult {
     void fetch();
   }, [fetch]);
 
-  return { vehicles, pagination, isLoading, error, refresh: fetch };
+  return { vehicles, pagination, isLoading, error, refresh: fetch, refetch: fetch };
 }

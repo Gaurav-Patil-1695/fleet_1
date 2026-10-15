@@ -162,3 +162,42 @@ class ReadingRepository:
             .where(Reading.source == source)
         )
         return result.scalar_one()
+
+    async def list_readings(
+        self,
+        vehicle_id: UUID | None = None,
+        source: str | None = None,
+        is_test_mode: bool | None = None,
+        from_dt: datetime | None = None,
+        to_dt: datetime | None = None,
+        page: int = 1,
+        page_size: int = 20,
+    ) -> tuple[list[Reading], int]:
+        """Return a paginated list of readings and total count."""
+        stmt = select(Reading)
+
+        if vehicle_id is not None:
+            stmt = stmt.where(Reading.vehicle_id == vehicle_id)
+        if source is not None:
+            stmt = stmt.where(Reading.source == source)
+        if is_test_mode is not None:
+            stmt = stmt.where(Reading.is_test_mode == is_test_mode)
+        if from_dt is not None:
+            stmt = stmt.where(Reading.reading_timestamp >= from_dt)
+        if to_dt is not None:
+            stmt = stmt.where(Reading.reading_timestamp <= to_dt)
+
+        count_stmt = select(func.count()).select_from(stmt.subquery())
+        count_result = await self._session.execute(count_stmt)
+        total = count_result.scalar_one()
+
+        offset = (page - 1) * page_size
+        stmt = (
+            stmt.order_by(Reading.reading_timestamp.desc())
+            .offset(offset)
+            .limit(page_size)
+        )
+        result = await self._session.execute(stmt)
+        readings = list(result.scalars().all())
+
+        return readings, total

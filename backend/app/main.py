@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
 from app.middleware.error_handlers import register_exception_handlers
-from app.middleware.auth_middleware import verify_token_middleware
+
 from app.modules.auth.router import router as auth_router
 from app.modules.depots.router import router as depots_router
 from app.modules.vehicle_types.router import router as vehicle_types_router
@@ -40,9 +40,6 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
     )
 
-    # Auth token verification middleware
-    app.middleware("http")(verify_token_middleware)
-
     # Exception handlers
     register_exception_handlers(app)
 
@@ -57,8 +54,12 @@ def create_app() -> FastAPI:
     app.include_router(work_orders_router, prefix=api_prefix)
     app.include_router(telematics_router, prefix=api_prefix)
 
-    @app.get("/healthz", tags=["health"], include_in_schema=False)
+    @app.get("/health", tags=["health"], include_in_schema=False)
     async def health_check() -> dict:
+        return {"status": "ok"}
+
+    @app.get("/healthz", tags=["health"], include_in_schema=False)
+    async def health_check_z() -> dict:
         return {"status": "ok"}
 
     logger.info("Fleet Maintenance API application created (env=%s)", settings.APP_ENV)

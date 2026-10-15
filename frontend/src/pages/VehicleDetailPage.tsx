@@ -1,18 +1,17 @@
 import React from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useVehicleDetail } from '../hooks/useVehicleDetail';
 import { useVehicleReadings } from '../hooks/useReadings';
 import { usePermission } from '../hooks/usePermission';
 import { listVehicleWorkOrders } from '../services/vehiclesService';
 import Badge from '../components/ui/Badge';
 import Button from '../components/ui/Button';
-import Spinner from '../components/ui/Spinner';
 import Alert from '../components/ui/Alert';
 import WorkOrderStatusBadge from '../components/workOrder/WorkOrderStatusBadge';
 import { formatDate, formatDateTime } from '../utils/dateUtils';
 import { formatOdometer, isOdometerOverdue, isOdometerDueSoon, kmUntilService } from '../utils/odometerUtils';
 import { isOverdue, isDueSoon, relativeDueLabel } from '../utils/dateUtils';
-import { getErrorMessage, isNotFoundError } from '../utils/errorUtils';
+import { isNotFoundError } from '../utils/errorUtils';
 import type { Vehicle } from '../types/vehicle';
 import type { Reading } from '../types/reading';
 import type { WorkOrder } from '../types/workOrder';
@@ -149,14 +148,11 @@ export default function VehicleDetailPage(): React.ReactElement {
   const {
     workOrders,
     isLoading: workOrdersLoading,
-    error: workOrdersError,
   } = useVehicleWorkOrders(id);
   const {
     readings,
     isLoading: readingsLoading,
   } = useVehicleReadings({ vehicleId: id ?? '', page: 1, page_size: 5 });
-
-  const isLoading = vehicleLoading || workOrdersLoading || readingsLoading;
 
   const canEditVehicle = canAccess(['administrator', 'manager']);
   const canRecordOdometer = canAccess(['administrator', 'manager']);

@@ -4,7 +4,6 @@ import { listVehicles } from '../services/vehiclesService';
 import { listDepots } from '../services/depotsService';
 import { createWorkOrder } from '../services/workOrdersService';
 import { getCurrentUser } from '../services/authService';
-import { getErrorMessage } from '../utils/errorUtils';
 import type { Vehicle } from '../types/vehicle';
 import type { Depot } from '../types/depot';
 import type { WorkOrderCreate } from '../types/workOrder';
@@ -12,7 +11,6 @@ import type { UserRead } from '../types/auth';
 import Alert from '../components/ui/Alert';
 import Button from '../components/ui/Button';
 import Badge from '../components/ui/Badge';
-import Spinner from '../components/ui/Spinner';
 
 const UUID_RE = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
 

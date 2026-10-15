@@ -1,6 +1,5 @@
 import React from 'react';
 import type { DepotDashboard } from '../../types/depot';
-import Card from '../ui/Card';
 
 export interface DashboardStatsProps {
   dashboard: DepotDashboard;
@@ -16,28 +15,28 @@ export function DashboardStats({ dashboard }: DashboardStatsProps): React.ReactE
   }> = [
     {
       label: 'Total Vehicles',
-      value: dashboard.total_vehicles,
+      value: dashboard.total_vehicles ?? (dashboard.due_for_service.length + dashboard.overdue.length),
       color: 'var(--color-primary)',
       bgColor: 'var(--color-surface)',
       borderColor: 'var(--color-border-subtle)',
     },
     {
       label: 'Active Vehicles',
-      value: dashboard.active_vehicles,
+      value: dashboard.active_vehicles ?? 0,
       color: 'var(--color-success)',
       bgColor: 'var(--color-success-light)',
       borderColor: 'var(--color-sage-80)',
     },
     {
       label: 'Due for Service',
-      value: dashboard.due_for_service,
+      value: dashboard.due_for_service.length,
       color: 'var(--color-on-warning)',
       bgColor: 'var(--color-warning-light)',
       borderColor: 'var(--color-gold-80)',
     },
     {
       label: 'Overdue',
-      value: dashboard.overdue,
+      value: dashboard.overdue.length,
       color: 'var(--color-error)',
       bgColor: 'var(--color-error-light)',
       borderColor: 'var(--color-secondary-dark)',

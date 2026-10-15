@@ -35,6 +35,9 @@ export interface VehicleServiceSummary {
 
 export interface DepotDashboard {
   depot_id: string;
+  depot_name?: string;
+  total_vehicles?: number;
+  active_vehicles?: number;
   due_for_service: VehicleServiceSummary[];
   overdue: VehicleServiceSummary[];
 }

@@ -134,7 +134,8 @@ function Sidebar(): React.ReactElement {
   };
 
   const getNavLinkStyle = (isActive: boolean): React.CSSProperties => ({
-    display: 'block',
+    display: 'flex',
+    alignItems: 'center',
     padding: 'var(--space-2) var(--space-5)',
     fontSize: 'var(--font-size-small)',
     fontWeight: isActive
@@ -148,8 +149,6 @@ function Sidebar(): React.ReactElement {
     transition: 'background-color 150ms ease, color 150ms ease',
     minHeight: 'var(--touch-target-min)',
     lineHeight: 'var(--font-line-height-body)',
-    display: 'flex',
-    alignItems: 'center',
     cursor: 'pointer',
   } as React.CSSProperties);
 

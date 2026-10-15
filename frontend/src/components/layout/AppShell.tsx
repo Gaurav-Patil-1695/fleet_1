@@ -1,9 +1,10 @@
 import React from 'react';
+import { Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import TopBar from './TopBar';
 
-interface AppShellProps {
-  children: React.ReactNode;
+export interface AppShellProps {
+  children?: React.ReactNode;
 }
 
 function AppShell({ children }: AppShellProps): React.ReactElement {
@@ -33,7 +34,7 @@ function AppShell({ children }: AppShellProps): React.ReactElement {
           margin: '0 auto',
           boxSizing: 'border-box',
         }}>
-          {children}
+          {children ?? <Outlet />}
         </main>
       </div>
     </div>

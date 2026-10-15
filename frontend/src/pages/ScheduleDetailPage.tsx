@@ -4,7 +4,6 @@ import { getSchedule } from '../services/schedulesService';
 import { getVehicleType } from '../services/vehicleTypesService';
 import { getErrorMessage } from '../utils/errorUtils';
 import { formatDateTime } from '../utils/dateUtils';
-import { formatOdometer } from '../utils/odometerUtils';
 import { usePermission } from '../hooks/usePermission';
 import type { Schedule } from '../types/schedule';
 import type { VehicleType } from '../types/vehicleType';

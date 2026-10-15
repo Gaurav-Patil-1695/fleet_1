@@ -15,6 +15,7 @@ export interface UseWorkOrdersResult {
   isLoading: boolean;
   error: ApiError | null;
   refresh: () => Promise<void>;
+  refetch: () => Promise<void>;
 }
 
 export function useWorkOrders(params?: UseWorkOrdersParams): UseWorkOrdersResult {
@@ -54,5 +55,5 @@ export function useWorkOrders(params?: UseWorkOrdersParams): UseWorkOrdersResult
     void fetch();
   }, [fetch]);
 
-  return { workOrders, pagination, isLoading, error, refresh: fetch };
+  return { workOrders, pagination, isLoading, error, refresh: fetch, refetch: fetch };
 }

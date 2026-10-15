@@ -6,7 +6,7 @@ from uuid import UUID
 from fastapi import HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.modules.readings.schemas import ReadingListResponse, ReadingRead
+from app.modules.readings.schemas import ReadingListResponse, ReadingRead, Pagination as ReadingPagination
 from app.modules.vehicles.schemas import (
     Pagination,
     VehicleCreate,
@@ -14,7 +14,7 @@ from app.modules.vehicles.schemas import (
     VehicleRead,
     VehicleUpdate,
 )
-from app.modules.work_orders.schemas import WorkOrderListResponse, WorkOrderRead
+from app.modules.work_orders.schemas import WorkOrderListResponse, WorkOrderRead, Pagination as WorkOrderPagination
 from app.repositories.depot_repository import DepotRepository
 from app.repositories.reading_repository import ReadingRepository
 from app.repositories.schedule_repository import ScheduleRepository
@@ -259,7 +259,7 @@ class VehicleService:
         total_pages = math.ceil(total / page_size) if total > 0 else 1
         return ReadingListResponse(
             data=[ReadingRead.model_validate(r) for r in readings],
-            pagination=Pagination(
+            pagination=ReadingPagination(
                 page=page,
                 page_size=page_size,
                 total_items=total,

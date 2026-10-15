@@ -220,10 +220,8 @@ export function ScheduleForm({
         gap: 'var(--space-5)',
       }}
     >
-      {error && (
-        <Alert variant="error">
-          {getErrorMessage(error)}
-        </Alert>
+      {Boolean(error) && (
+        <Alert variant="error" message={getErrorMessage(error)} />
       )}
 
       {!isEditMode && (

@@ -6,6 +6,7 @@ export interface CardProps {
   className?: string;
   as?: React.ElementType;
   padding?: 'none' | 'sm' | 'md' | 'lg';
+  onClick?: () => void;
 }
 
 const cardStyles = `
@@ -47,6 +48,7 @@ export function Card({
   className,
   as: Component = 'div',
   padding = 'md',
+  onClick,
 }: CardProps): React.ReactElement {
   ensureCardStyles();
 
@@ -59,7 +61,7 @@ export function Card({
     .join(' ');
 
   return (
-    <Component className={classes} style={style}>
+    <Component className={classes} style={style} onClick={onClick}>
       {children}
     </Component>
   );

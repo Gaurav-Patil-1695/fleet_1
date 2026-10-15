@@ -4,14 +4,12 @@ import { useSchedules } from '../hooks/useSchedules';
 import { usePermission } from '../hooks/usePermission';
 import { deleteSchedule } from '../services/schedulesService';
 import { getErrorMessage } from '../utils/errorUtils';
-import { formatOdometer } from '../utils/odometerUtils';
 import type { Schedule } from '../types/schedule';
 import type { VehicleClass } from '../types/schedule';
 import Spinner from '../components/ui/Spinner';
 import Alert from '../components/ui/Alert';
 import Button from '../components/ui/Button';
 import Modal from '../components/ui/Modal';
-import EmptyState from '../components/ui/EmptyState';
 
 function VehicleClassBadge({ vehicleClass }: { vehicleClass: VehicleClass }): React.ReactElement {
   const configs: Record<VehicleClass, { label: string; bg: string }> = {
