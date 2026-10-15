@@ -3,7 +3,7 @@ import math
 from uuid import UUID
 
 from fastapi import HTTPException, status
-from sqlalchemy import func, select, update
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.schedule import Schedule as ScheduleModel
@@ -18,7 +18,6 @@ from app.modules.schedules.schemas import (
 from app.repositories.schedule_repository import ScheduleRepository
 from app.repositories.vehicle_repository import VehicleRepository
 from app.services.scheduling_service import calculate_next_service_due
-from app.utils.datetime_utils import now_utc  # may not exist; use alternative below
 
 logger = logging.getLogger(__name__)
 
@@ -45,7 +44,10 @@ class ScheduleService:
             except ValueError:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail={"code": "INVALID_UUID", "message": "Vehicle type ID must be a valid UUID."},
+                    detail={
+                        "code": "INVALID_UUID",
+                        "message": "Vehicle type ID must be a valid UUID.",
+                    },
                 )
             stmt = stmt.where(ScheduleModel.vehicle_type_id == vt_uuid)
 
@@ -60,7 +62,11 @@ class ScheduleService:
         total_items = count_result.scalar_one()
 
         offset = (page - 1) * limit
-        stmt = stmt.order_by(ScheduleModel.created_at.desc()).offset(offset).limit(limit)
+        stmt = (
+            stmt.order_by(ScheduleModel.created_at.desc())
+            .offset(offset)
+            .limit(limit)
+        )
         result = await self._db.execute(stmt)
         rows = result.scalars().all()
 
@@ -90,7 +96,9 @@ class ScheduleService:
                     status_code=status.HTTP_409_CONFLICT,
                     detail={
                         "code": "CONFLICT",
-                        "message": "An active schedule already exists for this vehicle type.",
+                        "message": (
+                            "An active schedule already exists for this vehicle type."
+                        ),
                     },
                 )
 
@@ -125,7 +133,9 @@ class ScheduleService:
             return None
         return Schedule.model_validate(row)
 
-    async def update_schedule(self, schedule_id: UUID, body: ScheduleUpdate) -> Schedule | None:
+    async def update_schedule(
+        self, schedule_id: UUID, body: ScheduleUpdate
+    ) -> Schedule | None:
         stmt = select(ScheduleModel).where(ScheduleModel.id == schedule_id)
         result = await self._db.execute(stmt)
         row = result.scalar_one_or_none()
@@ -146,7 +156,9 @@ class ScheduleService:
                     status_code=status.HTTP_409_CONFLICT,
                     detail={
                         "code": "CONFLICT",
-                        "message": "An active schedule already exists for this vehicle type.",
+                        "message": (
+                            "An active schedule already exists for this vehicle type."
+                        ),
                     },
                 )
 
@@ -176,8 +188,9 @@ class ScheduleService:
         if row is None:
             return False
 
-        # Check if any vehicles are associated through vehicle_type_id that depend on this
-        # If there are vehicles using this vehicle type, raise 409
+        # Check if any vehicles are associated through vehicle_type_id that
+        # depend on this. If there are vehicles using this vehicle type,
+        # raise 409.
         vehicles_stmt = select(func.count()).select_from(VehicleModel).where(
             VehicleModel.vehicle_type_id == row.vehicle_type_id
         )
@@ -188,7 +201,9 @@ class ScheduleService:
                 status_code=status.HTTP_409_CONFLICT,
                 detail={
                     "code": "CONFLICT",
-                    "message": "Cannot delete an active schedule that is used by vehicles.",
+                    "message": (
+                        "Cannot delete an active schedule that is used by vehicles."
+                    ),
                 },
             )
 
@@ -202,25 +217,24 @@ class ScheduleService:
         km_interval: int,
         month_interval: int,
     ) -> None:
-        """Recalculate next_service_due_date and next_service_due_odometer for all
-        vehicles belonging to the given vehicle_type_id."""
+        """Recalculate next_service_due_date and next_service_due_odometer for
+        all vehicles belonging to the given vehicle_type_id."""
         vehicles_stmt = select(VehicleModel).where(
             VehicleModel.vehicle_type_id == vehicle_type_id
         )
         vehicles_result = await self._db.execute(vehicles_stmt)
-        vehicles = vehicles_result.scalars().all()
+        vehicles = list(vehicles_result.scalars().all())
 
         for vehicle in vehicles:
             try:
-                result = calculate_next_service_due(
-                    last_serviced_odometer_km=vehicle.last_serviced_odometer_km,
+                next_due_date, next_due_odometer = calculate_next_service_due(
                     last_serviced_at=vehicle.last_serviced_at,
-                    last_known_odometer_km=vehicle.last_known_odometer_km,
+                    last_serviced_odometer_km=vehicle.last_serviced_odometer_km,
                     km_interval=km_interval,
                     month_interval=month_interval,
                 )
-                vehicle.next_service_due_date = result.get("next_service_due_date")
-                vehicle.next_service_due_odometer_km = result.get("next_service_due_odometer_km")
+                vehicle.next_service_due_date = next_due_date
+                vehicle.next_service_due_odometer_km = next_due_odometer
             except Exception:
                 logger.exception(
                     "Failed to recalculate service due for vehicle %s", vehicle.id

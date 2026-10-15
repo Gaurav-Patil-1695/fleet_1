@@ -12,9 +12,13 @@ class DepotCreate(BaseModel):
     @classmethod
     def name_required(cls, v: str) -> str:
         if not v or not v.strip():
-            raise ValueError("Depot name is required and must not exceed 150 characters.")
+            raise ValueError(
+                "Depot name is required and must not exceed 150 characters."
+            )
         if len(v) > 150:
-            raise ValueError("Depot name is required and must not exceed 150 characters.")
+            raise ValueError(
+                "Depot name is required and must not exceed 150 characters."
+            )
         return v
 
 

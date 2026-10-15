@@ -26,13 +26,15 @@ router = APIRouter(prefix="/depots", tags=["depots"])
 )
 async def list_depots(
     page: int = Query(1, ge=1),
-    pageSize: int = Query(20, ge=1, le=200),
+    page_size: int = Query(20, ge=1, le=200),
     search: str | None = Query(None),
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> DepotListResponse:
     service = DepotService(db)
-    return await service.list_depots(page=page, page_size=pageSize, search=search)
+    return await service.list_depots(
+        page=page, page_size=page_size, search=search
+    )
 
 
 @router.post(
@@ -51,60 +53,60 @@ async def create_depot(
 
 
 @router.get(
-    "/{depotId}",
+    "/{depot_id}",
     response_model=DepotRead,
     status_code=status.HTTP_200_OK,
     dependencies=[Depends(require_role("administrator", "manager"))],
 )
 async def get_depot(
-    depotId: UUID,
+    depot_id: UUID,
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> DepotRead:
     service = DepotService(db)
-    return await service.get_depot(depotId)
+    return await service.get_depot(depot_id)
 
 
 @router.put(
-    "/{depotId}",
+    "/{depot_id}",
     response_model=DepotRead,
     status_code=status.HTTP_200_OK,
     dependencies=[Depends(require_role("administrator"))],
 )
 async def update_depot(
-    depotId: UUID,
+    depot_id: UUID,
     body: DepotUpdate,
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> DepotRead:
     service = DepotService(db)
-    return await service.update_depot(depotId, body)
+    return await service.update_depot(depot_id, body)
 
 
 @router.delete(
-    "/{depotId}",
+    "/{depot_id}",
     status_code=status.HTTP_204_NO_CONTENT,
     dependencies=[Depends(require_role("administrator"))],
 )
 async def delete_depot(
-    depotId: UUID,
+    depot_id: UUID,
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> None:
     service = DepotService(db)
-    await service.delete_depot(depotId)
+    await service.delete_depot(depot_id)
 
 
 @router.get(
-    "/{depotId}/dashboard",
+    "/{depot_id}/dashboard",
     response_model=DepotDashboard,
     status_code=status.HTTP_200_OK,
     dependencies=[Depends(require_role("manager", "technician"))],
 )
 async def get_depot_dashboard(
-    depotId: UUID,
+    depot_id: UUID,
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> DepotDashboard:
     service = DepotService(db)
-    return await service.get_depot_dashboard(depotId)
+    return await service.get_depot_dashboard(depot_id)

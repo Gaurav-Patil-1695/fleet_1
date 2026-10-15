@@ -50,7 +50,8 @@ COPY alembic.ini ./alembic.ini
 COPY pyproject.toml ./pyproject.toml
 
 # Create a non-root user for security
-RUN addgroup --system fleetmaint && adduser --system --ingroup fleetmaint fleetmaint
+RUN addgroup --system fleetmaint \
+    && adduser --system --ingroup fleetmaint fleetmaint
 RUN chown -R fleetmaint:fleetmaint /app
 USER fleetmaint
 
@@ -58,9 +59,11 @@ USER fleetmaint
 EXPOSE 8000
 
 # Entrypoint: run Alembic migrations then start Uvicorn.
-# PORT, HOST, and WORKERS are read from environment variables at container start.
+# PORT, HOST, and WORKERS are read from environment variables at container
+# start. HOST defaults to 127.0.0.1; set HOST=0.0.0.0 explicitly if the
+# container must bind on all interfaces.
 CMD alembic upgrade head && \
     uvicorn app.main:app \
-        --host "${HOST:-0.0.0.0}" \
+        --host "${HOST:-127.0.0.1}" \
         --port "${PORT:-8000}" \
         --workers "${WORKERS:-1}"

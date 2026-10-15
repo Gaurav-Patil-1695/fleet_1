@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import List, Optional
 from uuid import UUID
 
 from pydantic import BaseModel, Field, field_validator
@@ -10,7 +9,7 @@ class ScheduleCreate(BaseModel):
     vehicle_class: str = Field(..., max_length=50)
     km_interval: int
     month_interval: int
-    is_active: Optional[bool] = True
+    is_active: bool | None = True
 
     @field_validator("vehicle_type_id", mode="before")
     @classmethod
@@ -23,53 +22,59 @@ class ScheduleCreate(BaseModel):
     @classmethod
     def validate_vehicle_class(cls, v: str) -> str:
         if not v or len(v) > 50:
-            raise ValueError("Vehicle class is required and must not exceed 50 characters.")
+            raise ValueError(
+                "Vehicle class is required and must not exceed 50 characters."
+            )
         return v
 
     @field_validator("km_interval")
     @classmethod
     def validate_km_interval(cls, v: int) -> int:
         if v < 1:
-            raise ValueError("Kilometre interval is required and must be a positive whole number.")
+            raise ValueError(
+                "Kilometre interval is required and must be a positive whole number."
+            )
         return v
 
     @field_validator("month_interval")
     @classmethod
     def validate_month_interval(cls, v: int) -> int:
         if v < 1:
-            raise ValueError("Month interval is required and must be a positive whole number.")
+            raise ValueError(
+                "Month interval is required and must be a positive whole number."
+            )
         return v
 
     @field_validator("is_active")
     @classmethod
-    def validate_is_active(cls, v: Optional[bool]) -> Optional[bool]:
+    def validate_is_active(cls, v: bool | None) -> bool | None:
         if v is not None and not isinstance(v, bool):
             raise ValueError("Active status must be true or false.")
         return v
 
 
 class ScheduleUpdate(BaseModel):
-    km_interval: Optional[int] = None
-    month_interval: Optional[int] = None
-    is_active: Optional[bool] = None
+    km_interval: int | None = None
+    month_interval: int | None = None
+    is_active: bool | None = None
 
     @field_validator("km_interval")
     @classmethod
-    def validate_km_interval(cls, v: Optional[int]) -> Optional[int]:
+    def validate_km_interval(cls, v: int | None) -> int | None:
         if v is not None and v < 1:
             raise ValueError("Kilometre interval must be a positive whole number.")
         return v
 
     @field_validator("month_interval")
     @classmethod
-    def validate_month_interval(cls, v: Optional[int]) -> Optional[int]:
+    def validate_month_interval(cls, v: int | None) -> int | None:
         if v is not None and v < 1:
             raise ValueError("Month interval must be a positive whole number.")
         return v
 
     @field_validator("is_active")
     @classmethod
-    def validate_is_active(cls, v: Optional[bool]) -> Optional[bool]:
+    def validate_is_active(cls, v: bool | None) -> bool | None:
         if v is not None and not isinstance(v, bool):
             raise ValueError("Active status must be true or false.")
         return v
@@ -96,7 +101,7 @@ class Pagination(BaseModel):
 
 
 class ScheduleListResponse(BaseModel):
-    data: List[ScheduleRead]
+    data: list[ScheduleRead]
     pagination: Pagination
 
 

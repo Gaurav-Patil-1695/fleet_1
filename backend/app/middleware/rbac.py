@@ -1,4 +1,4 @@
-from typing import Callable
+from collections.abc import Callable
 
 from fastapi import Depends, HTTPException, status
 
@@ -11,7 +11,10 @@ def require_role(*roles: str) -> Callable:
     FastAPI dependency factory that enforces role-based access control.
 
     Usage:
-        @router.get("/some-path", dependencies=[Depends(require_role("administrator", "manager"))])
+        @router.get(
+            "/some-path",
+            dependencies=[Depends(require_role("administrator", "manager"))],
+        )
 
     Accepted role strings (must match exactly):
         "administrator", "manager", "technician"

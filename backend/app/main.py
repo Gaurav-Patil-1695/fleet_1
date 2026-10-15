@@ -47,15 +47,15 @@ def create_app() -> FastAPI:
     register_exception_handlers(app)
 
     # Routers — all mounted under /v1
-    API_PREFIX = "/v1"
-    app.include_router(auth_router, prefix=API_PREFIX)
-    app.include_router(depots_router, prefix=API_PREFIX)
-    app.include_router(vehicle_types_router, prefix=API_PREFIX)
-    app.include_router(schedules_router, prefix=API_PREFIX)
-    app.include_router(vehicles_router, prefix=API_PREFIX)
-    app.include_router(readings_router, prefix=API_PREFIX)
-    app.include_router(work_orders_router, prefix=API_PREFIX)
-    app.include_router(telematics_router, prefix=API_PREFIX)
+    api_prefix = "/v1"
+    app.include_router(auth_router, prefix=api_prefix)
+    app.include_router(depots_router, prefix=api_prefix)
+    app.include_router(vehicle_types_router, prefix=api_prefix)
+    app.include_router(schedules_router, prefix=api_prefix)
+    app.include_router(vehicles_router, prefix=api_prefix)
+    app.include_router(readings_router, prefix=api_prefix)
+    app.include_router(work_orders_router, prefix=api_prefix)
+    app.include_router(telematics_router, prefix=api_prefix)
 
     @app.get("/healthz", tags=["health"], include_in_schema=False)
     async def health_check() -> dict:

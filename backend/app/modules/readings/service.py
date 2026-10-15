@@ -1,13 +1,17 @@
 import logging
-from datetime import datetime, timezone
-from typing import Optional
+from datetime import datetime
 from uuid import UUID
 
 from fastapi import HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.user import User
-from app.modules.readings.schemas import ReadingCreate, ReadingListResponse, ReadingRead, Pagination
+from app.modules.readings.schemas import (
+    ReadingCreate,
+    ReadingListResponse,
+    ReadingRead,
+    Pagination,
+)
 from app.repositories.reading_repository import ReadingRepository
 from app.repositories.vehicle_repository import VehicleRepository
 from app.services.scheduling_service import calculate_next_service_due
@@ -23,16 +27,16 @@ class ReadingService:
 
     async def list_readings(
         self,
-        vehicle_id: Optional[UUID] = None,
-        source: Optional[str] = None,
-        is_test_mode: Optional[bool] = None,
-        from_: Optional[str] = None,
-        to: Optional[str] = None,
+        vehicle_id: UUID | None = None,
+        source: str | None = None,
+        is_test_mode: bool | None = None,
+        from_: str | None = None,
+        to: str | None = None,
         page: int = 1,
         page_size: int = 20,
     ) -> ReadingListResponse:
-        from_dt: Optional[datetime] = None
-        to_dt: Optional[datetime] = None
+        from_dt: datetime | None = None
+        to_dt: datetime | None = None
 
         if from_:
             try:
@@ -40,7 +44,10 @@ class ReadingService:
             except ValueError:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail={"code": "INVALID_DATE", "message": "'from' must be a valid date-time value."},
+                    detail={
+                        "code": "INVALID_DATE",
+                        "message": "'from' must be a valid date-time value.",
+                    },
                 )
 
         if to:
@@ -49,7 +56,10 @@ class ReadingService:
             except ValueError:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail={"code": "INVALID_DATE", "message": "'to' must be a valid date-time value."},
+                    detail={
+                        "code": "INVALID_DATE",
+                        "message": "'to' must be a valid date-time value.",
+                    },
                 )
 
         readings, total_items = await self._reading_repo.list_readings(
@@ -63,7 +73,9 @@ class ReadingService:
         )
 
         import math
-        total_pages = max(1, math.ceil(total_items / page_size)) if total_items > 0 else 1
+        total_pages = (
+            max(1, math.ceil(total_items / page_size)) if total_items > 0 else 1
+        )
 
         return ReadingListResponse(
             data=[ReadingRead.model_validate(r) for r in readings],
@@ -85,18 +97,22 @@ class ReadingService:
         if vehicle is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail={"code": "VEHICLE_NOT_FOUND", "message": "Vehicle not found."},
+                detail={
+                    "code": "VEHICLE_NOT_FOUND",
+                    "message": "Vehicle not found.",
+                },
             )
 
         # Enforce: manual readings must have a recorded_by_user_id
-        recorded_by_user_id: Optional[UUID] = None
+        recorded_by_user_id: UUID | None = None
         if body.source == "manual":
             recorded_by_user_id = current_user.id
 
         # Determine is_test_mode
         is_test_mode = body.is_test_mode if body.is_test_mode is not None else False
 
-        # Source stored in DB: manual -> manual, telematics -> telematics (or telematics_mock if test mode)
+        # Source stored in DB: manual -> manual,
+        # telematics -> telematics (or telematics_mock if test mode)
         stored_source = body.source
         if body.source == "telematics" and is_test_mode:
             stored_source = "telematics_mock"
@@ -115,7 +131,10 @@ class ReadingService:
         try:
             await self._update_vehicle_odometer(vehicle, reading)
         except Exception as exc:
-            logger.error("Failed to update vehicle odometer after reading creation: %s", exc)
+            logger.error(
+                "Failed to update vehicle odometer after reading creation: %s",
+                exc,
+            )
 
         return ReadingRead.model_validate(reading)
 
@@ -140,19 +159,22 @@ class ReadingService:
 
         # Invoke scheduling service to recalculate next service due
         try:
-            next_service = await calculate_next_service_due(
-                db=self._db,
-                vehicle=vehicle,
-                current_odometer_km=float(reading.odometer_km),
-                reading_date=reading.reading_timestamp,
+            next_due_date, next_due_odometer = calculate_next_service_due(
+                last_serviced_at=vehicle.last_serviced_at,
+                last_serviced_odometer_km=vehicle.last_serviced_odometer_km,
+                km_interval=vehicle.km_interval
+                if hasattr(vehicle, "km_interval") else None,
+                month_interval=vehicle.month_interval
+                if hasattr(vehicle, "month_interval") else None,
             )
-            if next_service is not None:
-                if next_service.get("next_service_due_date") is not None:
-                    update_data["next_service_due_date"] = next_service["next_service_due_date"]
-                if next_service.get("next_service_due_odometer_km") is not None:
-                    update_data["next_service_due_odometer_km"] = next_service["next_service_due_odometer_km"]
+            if next_due_date is not None:
+                update_data["next_service_due_date"] = next_due_date
+            if next_due_odometer is not None:
+                update_data["next_service_due_odometer_km"] = next_due_odometer
         except Exception as exc:
-            logger.error("Scheduling service failed for vehicle %s: %s", vehicle.id, exc)
+            logger.error(
+                "Scheduling service failed for vehicle %s: %s", vehicle.id, exc
+            )
 
         await self._vehicle_repo.update(vehicle.id, update_data)
 
@@ -161,6 +183,9 @@ class ReadingService:
         if reading is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail={"code": "READING_NOT_FOUND", "message": "Reading not found."},
+                detail={
+                    "code": "READING_NOT_FOUND",
+                    "message": "Reading not found.",
+                },
             )
         return ReadingRead.model_validate(reading)

@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any
 from uuid import UUID
 
 from pydantic import BaseModel, Field, field_validator
@@ -7,11 +7,28 @@ from pydantic import BaseModel, Field, field_validator
 
 class ReadingCreate(BaseModel):
     vehicle_id: UUID = Field(..., description="Vehicle ID must be a valid UUID.")
-    odometer_km: float = Field(..., ge=0, description="Odometer reading is required and must be a non-negative number.")
-    source: str = Field(..., max_length=20, description="Source must be either 'manual' or 'telematics'.")
-    is_test_mode: Optional[bool] = Field(None, description="Test mode must be true or false.")
-    raw_payload: Optional[Dict[str, Any]] = None
-    reading_timestamp: datetime = Field(..., description="Reading timestamp is required and must be a valid date-time value.")
+    odometer_km: float = Field(
+        ...,
+        ge=0,
+        description=(
+            "Odometer reading is required and must be a non-negative number."
+        ),
+    )
+    source: str = Field(
+        ...,
+        max_length=20,
+        description="Source must be either 'manual' or 'telematics'.",
+    )
+    is_test_mode: bool | None = Field(
+        None, description="Test mode must be true or false."
+    )
+    raw_payload: dict[str, Any] | None = None
+    reading_timestamp: datetime = Field(
+        ...,
+        description=(
+            "Reading timestamp is required and must be a valid date-time value."
+        ),
+    )
 
     @field_validator("source")
     @classmethod
@@ -25,18 +42,20 @@ class ReadingCreate(BaseModel):
     @classmethod
     def validate_odometer_km(cls, v: float) -> float:
         if v < 0:
-            raise ValueError("Odometer reading is required and must be a non-negative number.")
+            raise ValueError(
+                "Odometer reading is required and must be a non-negative number."
+            )
         return v
 
 
 class ReadingRead(BaseModel):
     id: UUID
     vehicle_id: UUID
-    recorded_by_user_id: Optional[UUID] = None
+    recorded_by_user_id: UUID | None = None
     odometer_km: float
     source: str
     is_test_mode: bool
-    raw_payload: Optional[Dict[str, Any]] = None
+    raw_payload: dict[str, Any] | None = None
     reading_timestamp: datetime
     created_at: datetime
 
@@ -55,5 +74,5 @@ class Pagination(BaseModel):
 
 
 class ReadingListResponse(BaseModel):
-    data: List[ReadingRead]
+    data: list[ReadingRead]
     pagination: Pagination

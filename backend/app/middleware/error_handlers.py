@@ -16,7 +16,9 @@ def _error_body(code: str, message: str, details: Any = None) -> dict:
     return body
 
 
-async def http_exception_handler(request: Request, exc: StarletteHTTPException) -> JSONResponse:
+async def http_exception_handler(
+    request: Request, exc: StarletteHTTPException
+) -> JSONResponse:
     """
     Handle FastAPI / Starlette HTTPException instances.
 
@@ -39,7 +41,9 @@ async def http_exception_handler(request: Request, exc: StarletteHTTPException) 
     )
 
 
-async def validation_exception_handler(request: Request, exc: RequestValidationError) -> JSONResponse:
+async def validation_exception_handler(
+    request: Request, exc: RequestValidationError
+) -> JSONResponse:
     """
     Handle Pydantic / FastAPI request validation errors.
 
@@ -48,7 +52,12 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
     """
     errors = exc.errors()
     details: dict = {"validation_errors": errors}
-    logger.debug("Request validation error on %s %s: %s", request.method, request.url.path, errors)
+    logger.debug(
+        "Request validation error on %s %s: %s",
+        request.method,
+        request.url.path,
+        errors,
+    )
     return JSONResponse(
         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
         content=_error_body(

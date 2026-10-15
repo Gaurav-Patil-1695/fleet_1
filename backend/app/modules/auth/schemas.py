@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import uuid
 from datetime import datetime
-from typing import Optional
 
 from pydantic import BaseModel, EmailStr, Field, field_validator
 
@@ -40,13 +39,13 @@ class RefreshRequest(BaseModel):
 class TokenResponse(BaseModel):
     access_token: str
     token_type: str
-    expires_in: Optional[int] = None
-    refresh_token: Optional[str] = None
+    expires_in: int | None = None
+    refresh_token: str | None = None
 
 
 class UserRead(BaseModel):
     id: uuid.UUID
-    depot_id: Optional[uuid.UUID] = None
+    depot_id: uuid.UUID | None = None
     full_name: str = Field(..., max_length=200)
     email: str = Field(..., max_length=320)
     role: str

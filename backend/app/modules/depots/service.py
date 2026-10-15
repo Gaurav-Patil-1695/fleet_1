@@ -44,7 +44,9 @@ class DepotService:
         total_items: int = total_items_result.scalar_one()
 
         offset = (page - 1) * page_size
-        data_query = query.order_by(Depot.name).offset(offset).limit(page_size)
+        data_query = (
+            query.order_by(Depot.name).offset(offset).limit(page_size)
+        )
         result = await self._db.execute(data_query)
         depots = result.scalars().all()
 
@@ -131,7 +133,9 @@ class DepotService:
 
         # Check for associated vehicles before deletion
         vehicle_count_result = await self._db.execute(
-            select(func.count()).select_from(Vehicle).where(Vehicle.depot_id == depot_id)
+            select(func.count()).select_from(Vehicle).where(
+                Vehicle.depot_id == depot_id
+            )
         )
         vehicle_count: int = vehicle_count_result.scalar_one()
         if vehicle_count > 0:
@@ -171,7 +175,8 @@ class DepotService:
             next_date: date | None = vehicle.next_service_due_date
             next_odometer = vehicle.next_service_due_odometer_km
 
-            # A vehicle is overdue if the service date has passed OR odometer has been exceeded
+            # A vehicle is overdue if the service date has passed OR
+            # odometer has been exceeded
             is_date_overdue = next_date is not None and next_date < today
             is_odometer_overdue = (
                 next_odometer is not None

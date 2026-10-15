@@ -1,7 +1,9 @@
 import uuid
 from datetime import date, datetime
 
-from sqlalchemy import Boolean, CheckConstraint, Date, DateTime, ForeignKey, Numeric, String, func
+from sqlalchemy import (
+    Boolean, CheckConstraint, Date, DateTime, ForeignKey, Numeric, String, func,
+)
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -76,7 +78,11 @@ class Vehicle(Base):
         Numeric(10, 1), nullable=True, index=True
     )
     status: Mapped[str] = mapped_column(
-        String(30), nullable=False, default="active", server_default="active", index=True
+        String(30),
+        nullable=False,
+        default="active",
+        server_default="active",
+        index=True,
     )
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),

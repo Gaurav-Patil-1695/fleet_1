@@ -1,6 +1,5 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import field_validator
-from typing import List
 
 
 class Settings(BaseSettings):
@@ -14,7 +13,7 @@ class Settings(BaseSettings):
     # Application
     APP_ENV: str
     PORT: int = 8000
-    HOST: str = "0.0.0.0"
+    HOST: str = "127.0.0.1"
     API_BASE_URL: str
     DEBUG: bool = False
     WORKERS: int = 2
@@ -60,8 +59,12 @@ class Settings(BaseSettings):
     LOG_LEVEL: str = "INFO"
     LOG_FORMAT: str = "json"
 
-    def get_cors_allowed_origins(self) -> List[str]:
-        return [origin.strip() for origin in self.CORS_ALLOWED_ORIGINS.split(",") if origin.strip()]
+    def get_cors_allowed_origins(self) -> list[str]:
+        return [
+            origin.strip()
+            for origin in self.CORS_ALLOWED_ORIGINS.split(",")
+            if origin.strip()
+        ]
 
 
 settings = Settings()

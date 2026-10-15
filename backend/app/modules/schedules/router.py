@@ -25,7 +25,9 @@ async def list_schedules(
     vehicle_class: str | None = Query(None),
     is_active: bool | None = Query(None),
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(require_role("administrator", "manager")),
+    current_user: User = Depends(
+        require_role("administrator", "manager")
+    ),
 ) -> ScheduleListResponse:
     service = ScheduleService(db)
     return await service.list_schedules(
@@ -47,14 +49,16 @@ async def create_schedule(
     return await service.create_schedule(body)
 
 
-@router.get("/{scheduleId}", response_model=Schedule)
+@router.get("/{schedule_id}", response_model=Schedule)
 async def get_schedule(
-    scheduleId: UUID,
+    schedule_id: UUID,
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(require_role("administrator", "manager")),
+    current_user: User = Depends(
+        require_role("administrator", "manager")
+    ),
 ) -> Schedule:
     service = ScheduleService(db)
-    schedule = await service.get_schedule(scheduleId)
+    schedule = await service.get_schedule(schedule_id)
     if schedule is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -63,15 +67,15 @@ async def get_schedule(
     return schedule
 
 
-@router.put("/{scheduleId}", response_model=Schedule)
+@router.put("/{schedule_id}", response_model=Schedule)
 async def update_schedule(
-    scheduleId: UUID,
+    schedule_id: UUID,
     body: ScheduleUpdate,
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(require_role("administrator")),
 ) -> Schedule:
     service = ScheduleService(db)
-    schedule = await service.update_schedule(scheduleId, body)
+    schedule = await service.update_schedule(schedule_id, body)
     if schedule is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -80,14 +84,14 @@ async def update_schedule(
     return schedule
 
 
-@router.delete("/{scheduleId}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{schedule_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_schedule(
-    scheduleId: UUID,
+    schedule_id: UUID,
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(require_role("administrator")),
 ) -> None:
     service = ScheduleService(db)
-    deleted = await service.delete_schedule(scheduleId)
+    deleted = await service.delete_schedule(schedule_id)
     if not deleted:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

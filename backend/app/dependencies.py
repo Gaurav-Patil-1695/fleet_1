@@ -1,7 +1,7 @@
-"""Shared FastAPI dependency callables: get_db session, get_current_user, require_role."""
+"""Shared FastAPI dependency callables: get_db session, get_current_user,
+require_role."""
 
-from collections.abc import AsyncGenerator
-from typing import Callable
+from collections.abc import AsyncGenerator, Callable
 
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
@@ -58,7 +58,7 @@ async def get_current_user(
         raise credentials_exception
 
     repo = UserRepository(db)
-    user: User | None = await repo.get_by_id(int(user_id))
+    user: User | None = await repo.get_by_id(user_id)
     if user is None:
         raise credentials_exception
 
@@ -72,12 +72,17 @@ async def get_current_user(
 
 
 def require_role(*roles: str) -> Callable:
-    """Return a FastAPI dependency that enforces the caller has one of the given roles.
+    """Return a FastAPI dependency that enforces the caller has one of the
+    given roles.
 
     Usage:
-        @router.get("/", dependencies=[Depends(require_role("administrator", "manager"))])
+        @router.get(
+            "/",
+            dependencies=[Depends(require_role("administrator", "manager"))],
+        )
 
-    The roles accepted are the canonical stored strings: administrator, manager, technician.
+    The roles accepted are the canonical stored strings: administrator,
+    manager, technician.
     """
 
     async def _check_role(

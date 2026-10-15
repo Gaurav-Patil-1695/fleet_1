@@ -1,9 +1,9 @@
-"""OdometerProvider abstract base class — all telematics provider implementations must satisfy this interface."""
+"""OdometerProvider abstract base class — all telematics provider implementations
+must satisfy this interface."""
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from datetime import datetime
-from typing import List
 
 
 @dataclass
@@ -25,7 +25,7 @@ class OdometerProvider(ABC):
     """
 
     @abstractmethod
-    async def fetch_readings(self, vehicle_ids: List[str]) -> List[OdometerReading]:
+    async def fetch_readings(self, vehicle_ids: list[str]) -> list[OdometerReading]:
         """Fetch the latest odometer readings for the given vehicle identifiers.
 
         Args:

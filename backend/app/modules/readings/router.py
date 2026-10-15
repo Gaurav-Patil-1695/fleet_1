@@ -1,4 +1,3 @@
-from typing import Optional
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, Query, status
@@ -15,11 +14,11 @@ router = APIRouter(prefix="/readings", tags=["readings"])
 
 @router.get("", response_model=ReadingListResponse, status_code=status.HTTP_200_OK)
 async def list_readings(
-    vehicle_id: Optional[UUID] = Query(None),
-    source: Optional[str] = Query(None),
-    is_test_mode: Optional[bool] = Query(None),
-    from_: Optional[str] = Query(None, alias="from"),
-    to: Optional[str] = Query(None),
+    vehicle_id: UUID | None = Query(None),
+    source: str | None = Query(None),
+    is_test_mode: bool | None = Query(None),
+    from_: str | None = Query(None, alias="from"),
+    to: str | None = Query(None),
     page: int = Query(1, ge=1),
     page_size: int = Query(20, ge=1, le=100),
     db: AsyncSession = Depends(get_db),
@@ -41,17 +40,23 @@ async def list_readings(
 async def create_reading(
     body: ReadingCreate,
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(require_role("administrator", "manager", "technician")),
+    current_user: User = Depends(
+        require_role("administrator", "manager", "technician")
+    ),
 ) -> ReadingRead:
     service = ReadingService(db)
     return await service.create_reading(body=body, current_user=current_user)
 
 
-@router.get("/{readingId}", response_model=ReadingRead, status_code=status.HTTP_200_OK)
+@router.get(
+    "/{reading_id}", response_model=ReadingRead, status_code=status.HTTP_200_OK
+)
 async def get_reading(
-    readingId: UUID,
+    reading_id: UUID,
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(require_role("administrator", "manager", "technician")),
+    current_user: User = Depends(
+        require_role("administrator", "manager", "technician")
+    ),
 ) -> ReadingRead:
     service = ReadingService(db)
-    return await service.get_reading(reading_id=readingId)
+    return await service.get_reading(reading_id=reading_id)

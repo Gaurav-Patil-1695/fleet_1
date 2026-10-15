@@ -1,7 +1,9 @@
 import uuid
 from datetime import datetime
 
-from sqlalchemy import CheckConstraint, DateTime, ForeignKey, Numeric, String, Text, func
+from sqlalchemy import (
+    CheckConstraint, DateTime, ForeignKey, Numeric, String, Text, func,
+)
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -21,7 +23,12 @@ class WorkOrder(Base):
             name="ck_work_orders_post_service_odometer_km",
         ),
         CheckConstraint(
-            "status != 'closed' OR (completion_notes IS NOT NULL AND post_service_odometer_km IS NOT NULL AND closed_at IS NOT NULL)",
+            (
+                "status != 'closed' OR ("
+                "completion_notes IS NOT NULL "
+                "AND post_service_odometer_km IS NOT NULL "
+                "AND closed_at IS NOT NULL)"
+            ),
             name="ck_work_orders_closed_requires_fields",
         ),
     )

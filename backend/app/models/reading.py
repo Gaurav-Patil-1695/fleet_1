@@ -1,7 +1,9 @@
 import uuid
 from datetime import datetime
 
-from sqlalchemy import Boolean, CheckConstraint, DateTime, ForeignKey, Numeric, String, func
+from sqlalchemy import (
+    Boolean, CheckConstraint, DateTime, ForeignKey, Numeric, String, func,
+)
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.orm import Mapped, mapped_column
 

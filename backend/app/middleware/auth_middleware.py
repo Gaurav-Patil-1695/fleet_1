@@ -1,12 +1,10 @@
 import logging
-from typing import Optional
 
 from fastapi import Request, HTTPException, status
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from fastapi.security import HTTPBearer
 from jose import JWTError, jwt
 
 from app.config import settings
-from app.dependencies import get_current_user
 
 logger = logging.getLogger(__name__)
 
@@ -18,9 +16,9 @@ PUBLIC_PATHS = {
 _bearer_scheme = HTTPBearer(auto_error=False)
 
 
-def extract_token_from_request(request: Request) -> Optional[str]:
+def extract_token_from_request(request: Request) -> str | None:
     """Extract the raw JWT string from the Authorization header, if present."""
-    authorization: Optional[str] = request.headers.get("Authorization")
+    authorization: str | None = request.headers.get("Authorization")
     if not authorization:
         return None
     parts = authorization.split()
@@ -52,7 +50,8 @@ def decode_access_token(token: str) -> dict:
 
 
 def is_public_path(request: Request) -> bool:
-    """Return True when the request targets a path that does not require authentication."""
+    """Return True when the request targets a path that does not require
+    authentication."""
     path = request.url.path
     method = request.method.upper()
     return (path, method) in PUBLIC_PATHS
@@ -75,7 +74,10 @@ async def verify_token_middleware(request: Request, call_next):
     if token is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail={"code": "MISSING_TOKEN", "message": "Authentication credentials were not provided"},
+            detail={
+                "code": "MISSING_TOKEN",
+                "message": "Authentication credentials were not provided",
+            },
             headers={"WWW-Authenticate": "Bearer"},
         )
 
