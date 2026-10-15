@@ -13,3 +13,7 @@ passlib[bcrypt]==1.7.4
 python-multipart==0.0.9
 ruff==0.4.4
 black==24.4.2
+# Added by reconciliation: imported by the generated code but not declared
+email-validator
+PyJWT
+python-dateutil
