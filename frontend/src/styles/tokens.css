@@ -1,0 +1,149 @@
+:root {
+  /* Colors */
+  --color-primary: #3956a5;
+  --color-primary-dark: #10005d;
+  --color-primary-light: #97AFD4;
+  --color-secondary: #ff4b41;
+  --color-secondary-dark: #B41E26;
+  --color-secondary-light: #EAADB8;
+  --color-success: #9bb796;
+  --color-success-light: #D7E2D5;
+  --color-warning: #e4c573;
+  --color-warning-light: #F4E8C7;
+  --color-error: #b41e26;
+  --color-error-light: #FFB7B3;
+  --color-info: #87C8C3;
+  --color-info-light: #CFE9E7;
+  --color-accent: #B7A2E0;
+  --color-ink: #000000;
+  --color-body: #1f2430;
+  --color-muted: #5f6066;
+  --color-disabled: #CDCDC2;
+  --color-surface: #ffffff;
+  --color-surface-raised: #EFEFEC;
+  --color-canvas: #f7f7f5;
+  --color-border: #8a8b80;
+  --color-border-subtle: #E0E0D9;
+  --color-focus-ring: #3958A5;
+  --color-overlay: rgba(16, 0, 93, 0.48);
+  --color-white: #FFFFFF;
+  --color-black: #000000;
+  --color-on-primary: #FFFFFF;
+  --color-on-primary-dark: #FFFFFF;
+  --color-on-primary-light: #000000;
+  --color-on-secondary: #000000;
+  --color-on-secondary-dark: #FFFFFF;
+  --color-on-secondary-light: #000000;
+  --color-on-success: #000000;
+  --color-on-warning: #000000;
+  --color-on-error: #FFFFFF;
+  --color-on-info: #000000;
+  --color-on-accent: #000000;
+  --color-on-surface: #000000;
+  --color-on-canvas: #000000;
+  --color-on-surface-raised: #000000;
+
+  /* Palette */
+  --color-warm-grey: #C0C0B3;
+  --color-warm-grey-80: #CDCDC2;
+  --color-warm-grey-60: #D9D9D1;
+  --color-warm-grey-40: #E6E6E1;
+  --color-sage: #9BB796;
+  --color-sage-80: #AFC5AB;
+  --color-sage-60: #C3D4C0;
+  --color-sage-40: #D7E2D5;
+  --color-teal: #87C8C3;
+  --color-teal-80: #9FD3CF;
+  --color-teal-60: #B7DEDB;
+  --color-teal-40: #CFE9E7;
+  --color-sky: #97AFD4;
+  --color-sky-80: #ACBFDD;
+  --color-sky-60: #C1CFE5;
+  --color-sky-40: #D5DFEE;
+  --color-lilac: #B7A2E0;
+  --color-lilac-80: #C5B5E6;
+  --color-lilac-60: #D4C7EC;
+  --color-lilac-40: #E2DAF3;
+  --color-blush: #EAADB8;
+  --color-blush-80: #EEBDC6;
+  --color-blush-60: #F2CED4;
+  --color-blush-40: #F7DEE3;
+  --color-gold: #E4C573;
+  --color-gold-80: #E9D18F;
+  --color-gold-60: #EFDCAB;
+  --color-gold-40: #F4E8C7;
+
+  /* Spacing */
+  --space-0: 0px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 28px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-24: 96px;
+  --touch-target-min: 44px;
+  --content-max-width: 1200px;
+  --content-narrow-width: 720px;
+
+  /* Border Radius */
+  --radius-none: 0px;
+  --radius-xs: 3px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+
+  /* Elevation / Shadows */
+  --elevation-1: 0 1px 2px rgba(0, 0, 0, 0.06);
+  --elevation-2: 0 4px 12px rgba(0, 0, 0, 0.10);
+  --elevation-3: 0 12px 28px rgba(0, 0, 0, 0.14);
+
+  /* Typography — Font Families */
+  --font-family-base: 'Inter', 'Segoe UI', Arial, sans-serif;
+  --font-family-mono: 'JetBrains Mono', 'Courier New', monospace;
+
+  /* Typography — Font Sizes */
+  --font-size-display: 32px;
+  --font-size-h1: 24px;
+  --font-size-h2: 20px;
+  --font-size-h3: 16px;
+  --font-size-body: 16px;
+  --font-size-small: 14px;
+  --font-size-caption: 12px;
+
+  /* Typography — Line Heights */
+  --font-line-height-display: 40px;
+  --font-line-height-h1: 32px;
+  --font-line-height-h2: 28px;
+  --font-line-height-h3: 24px;
+  --font-line-height-body: 24px;
+  --font-line-height-small: 20px;
+  --font-line-height-caption: 16px;
+
+  /* Typography — Font Weights */
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-display: 700;
+  --font-weight-h1: 700;
+  --font-weight-h2: 600;
+  --font-weight-h3: 600;
+  --font-weight-body: 400;
+  --font-weight-small: 400;
+  --font-weight-caption: 400;
+
+  /* Typography — Letter Spacing */
+  --font-letter-spacing-tight: -0.02em;
+  --font-letter-spacing-normal: 0em;
+  --font-letter-spacing-wide: 0.04em;
+  --font-letter-spacing-caps: 0.08em;
+}
